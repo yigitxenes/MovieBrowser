@@ -12,13 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.example.moviebrowser.placeholder.PlaceholderContent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
  */
 public class MovieFragment extends Fragment {
+    List<Movie> movies = new ArrayList<>();
 
     OnMovieSelected listener;
 
@@ -52,6 +54,23 @@ public class MovieFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+        movies.add(new Movie("The Shawshank Redemption","Frank Darabont",
+                new ArrayList<>(Arrays.asList("Tim Robbins", "Morgan Freeman", "Bob Gunton")),
+                1994,
+                "Two imprisoned men bond over a number of years, " +
+                        "finding solace and eventual redemption through acts of common decency."));
+        movies.add(new Movie("The Godfather","Francis Ford Coppola",
+                new ArrayList<>(Arrays.asList("Marlon Brando", "Al Pacino", " James Caan")),
+                1972,
+                "The aging patriarch of an organized crime dynasty transfers control of his "
+                        +
+                        "clandestine empire to his reluctant son."));
+        movies.add(new Movie("Pulp Fiction","Quentin Tarantino",
+                new ArrayList<>(Arrays.asList("John Travolta", "Uma Thurman", "Samuel L. Jackson")),
+                1994,
+                "The lives of two mob hitmen, a boxer, a gangster's wife, and a pair of diner bandits intertwine in four tales of violence and redemption."));
+
+
     }
 
     @Override
@@ -68,7 +87,7 @@ public class MovieFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyMovieRecyclerViewAdapter(PlaceholderContent.ITEMS));
+            recyclerView.setAdapter(new MyMovieRecyclerViewAdapter(movies, listener));
         }
         return view;
     }

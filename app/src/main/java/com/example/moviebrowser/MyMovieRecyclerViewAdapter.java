@@ -2,6 +2,7 @@ package com.example.moviebrowser;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import java.util.List;
  */
 public class MyMovieRecyclerViewAdapter extends RecyclerView.Adapter<MyMovieRecyclerViewAdapter.ViewHolder> {
 
+    int selectedIndex;
     private final List<Movie> mValues;
     private final MovieFragment.OnMovieSelected mListener;
 
@@ -29,16 +31,28 @@ public class MyMovieRecyclerViewAdapter extends RecyclerView.Adapter<MyMovieRecy
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-        return new ViewHolder(FragmentMovieBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_movie,parent, false);
+        return new ViewHolder(view);
 
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        position = holder.getAdapterPosition();
         holder.mItem = mValues.get(position);
+
         holder.mIdView.setText(Integer.toString(position));
         holder.mContentView.setText(mValues.get(position).getName());
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.movieSelected(holder.mItem);
+                notifyItemChanged(selectedIndex);
+                selectedIndex = holder.getAbsoluteAdapterPosition();
+                notifyItemChanged(selectedIndex);
+            }
+        });
+        holder.itemView.setBackgroundColor(selectedIndex == position ? Color.GREEN : Color.TRANSPARENT);
     }
 
     @Override
@@ -50,11 +64,20 @@ public class MyMovieRecyclerViewAdapter extends RecyclerView.Adapter<MyMovieRecy
         public final TextView mIdView;
         public final TextView mContentView;
         public Movie mItem;
+        public final View mView;
 
-        public ViewHolder(FragmentMovieBinding binding) {
-            super(binding.getRoot());
-            mIdView = binding.itemNumber;
-            mContentView = binding.content;
+        public ViewHolder(View view) {
+            super(view);
+            mView = view;
+            mIdView = view.findViewById(R.id.item_number);
+            mContentView = view.findViewById(R.id.content);
+            mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.movieSelected(mItem);
+                }
+            });
+
         }
 
         @Override
